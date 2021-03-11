@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { Token } from './token.entity';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/modules/auth/auth.service';
 
 @Injectable()
 export class TokenService {

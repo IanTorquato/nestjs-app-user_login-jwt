@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { ResponseError } from 'src/globalDto/error.dto';
 import { MaskDataCreate } from './dto/mask.dto';
 import { Mask } from './mask.entity';

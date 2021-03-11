@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Mask } from 'src/mask/mask.entity';
+import { Mask } from 'src/modules/mask/mask.entity';
 
 @Entity()
 export class User {

@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { ResponseError } from 'src/globalDto/error.dto';
 import { MaskDataCreate } from './dto/mask.dto';
 import { Mask } from './mask.entity';
-import { ExtractJwt } from 'passport-jwt';
 
 @Injectable()
 export class MaskService {

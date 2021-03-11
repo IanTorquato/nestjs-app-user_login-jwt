@@ -2,16 +2,14 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthService } from 'src/modules/auth/auth.service';
+import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { ResponseError } from 'src/globalDto/error.dto';
 import { UserDataCreate } from './dto/user.dto';
 import { User } from './user.entity';
