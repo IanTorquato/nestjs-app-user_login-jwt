@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  postgres-login-jwt:
+    container_name: postgres-login-jwt
+    image: postgres:13-alpine
+    environment: 
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "pg-login"
+    ports: 
+      - "5432:5432"
