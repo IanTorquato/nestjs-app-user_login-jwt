@@ -3,7 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { ResponseError } from 'src/globalDto/error.dto';
-import { UserDataCreate } from './dto/user.dto';
+import { UserCreateSuccessful, UserDataCreate } from './dto/user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -15,19 +15,33 @@ export class UserService {
     // Empty
   }
 
-  async create(data: UserDataCreate): Promise<User | ResponseError> {
-    const password = await bcrypt.hash(data.password, 8);
+  async create(
+    data: UserDataCreate,
+  ): Promise<UserCreateSuccessful | ResponseError> {
+    const { name, email, password } = data;
+
+    const userExist = await this.userRepository.findOne({ email });
+
+    if (userExist) {
+      return { error: 'Este e-mail já está sendo usado!' };
+    }
+
+    const passwordEncrypted = await bcrypt.hash(password, 8);
 
     const user = new User();
 
-    user.name = data.name;
-    user.email = data.email;
-    user.password = password;
+    user.name = name;
+    user.email = email;
+    user.password = passwordEncrypted;
 
     return this.userRepository
       .save(user)
-      .then((newUser) => newUser)
-      .catch(() => {
+      .then(({ id, name, email, created_at }) => {
+        return { id, name, email, created_at };
+      })
+      .catch((err) => {
+        console.log(err);
+
         return { error: 'Falha ao criar um novo usuário!' };
       });
   }
@@ -42,6 +56,8 @@ export class UserService {
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email });
+
+    return user;
   }
 }
