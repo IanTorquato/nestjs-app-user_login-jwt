@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-app-test",
+  "name": "nestjs-app-user_login-jwt",
   "version": "0.0.1",
   "author": "iantorquato2@gmail.com",
   "description": "My first project with NestJS",
