@@ -1,6 +1,7 @@
 node_modules
 dist
-yarn.lock
 yarn-error.log
+
 .env
 docker-compose.yml
+.vscode/postgres-data
