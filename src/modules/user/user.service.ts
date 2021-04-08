@@ -47,7 +47,6 @@ export class UserService {
   }
 
   async findAll(): Promise<any> {
-    // const users = await this.userRepository.find();
     const users = await this.userRepository.find({
       select: ['id', 'name', 'email', 'created_at'],
     });
@@ -56,8 +55,12 @@ export class UserService {
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    const user = await this.userRepository.findOne({ email });
+    const userExist = await this.userRepository.findOne({ email });
 
-    return user;
+    if (!userExist) {
+      return undefined;
+    }
+
+    return userExist;
   }
 }

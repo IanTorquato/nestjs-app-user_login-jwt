@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 
 import { UserService } from 'src/modules/user/user.service';
 import { TokenService } from 'src/modules/token/token.service';
+import { UserDataLogin, UserLoginSuccessful } from '../user/dto/user.dto';
+import { ResponseError } from 'src/globalDto/error.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,22 +17,24 @@ export class AuthService {
     // Empty
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async login({
+    email,
+    password,
+  }: UserDataLogin): Promise<UserLoginSuccessful | ResponseError> {
     const user = await this.userService.findOne(email);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      return user;
+    if (!user) {
+      return { error: 'Usuário não encontrado, verifique o e-mail.' };
     }
 
-    return undefined;
-  }
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const access_token = this.jwtService.sign({ id: user.id });
 
-  async login(id: number, email: string) {
-    const payload = { id, email };
-    const token = this.jwtService.sign(payload);
+      await this.tokenService.save(access_token, user.id);
 
-    await this.tokenService.save(token, id);
+      return { access_token };
+    }
 
-    return { access_token: token };
+    return { error: 'Senha de usuário incorreta' };
   }
 }

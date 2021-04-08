@@ -1,18 +1,14 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from 'src/modules/auth/auth.service';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { ResponseError } from 'src/globalDto/error.dto';
-import { UserDataCreate } from './dto/user.dto';
-import { User } from './user.entity';
+import {
+  UserCreateSuccessful,
+  UserDataCreate,
+  UserDataLogin,
+  UserLoginSuccessful,
+} from './dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -25,21 +21,22 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() data: UserDataCreate): Promise<User | ResponseError> {
+  async create(
+    @Body() data: UserDataCreate,
+  ): Promise<UserCreateSuccessful | ResponseError> {
     return this.userService.create(data);
+  }
+
+  @Post('login')
+  async login(
+    @Body() data: UserDataLogin,
+  ): Promise<UserLoginSuccessful | ResponseError> {
+    return this.authService.login(data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<any> {
     return this.userService.findAll();
-  }
-
-  @UseGuards(AuthGuard('local'))
-  @Post('login')
-  async login(@Request() request) {
-    const { id, email } = request.user;
-
-    return this.authService.login(id, email);
   }
 }

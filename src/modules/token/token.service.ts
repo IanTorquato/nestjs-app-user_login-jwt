@@ -1,13 +1,6 @@
-import {
-  forwardRef,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { UserService } from 'src/modules/user/user.service';
 import { Token } from './token.entity';
 import { AuthService } from 'src/modules/auth/auth.service';
 
@@ -16,43 +9,35 @@ export class TokenService {
   constructor(
     @Inject('TOKEN_REPOSITORY')
     private tokenRepository: Repository<Token>,
-    private userService: UserService,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
   ) {
     // Empty
   }
 
-  async save(hash: string, id: number) {
-    const existentToken = await this.tokenRepository.findOne({
-      user: { id },
+  async save(hash: string, userId: number) {
+    const tokenExist = await this.tokenRepository.findOne({
+      user: { id: userId },
     });
 
-    if (!existentToken) {
-      return this.tokenRepository.insert({ hash, user: { id } });
+    if (!tokenExist) {
+      return this.tokenRepository.insert({ hash, user: { id: userId } });
     }
 
-    return this.tokenRepository.update(existentToken.id, { hash });
+    return this.tokenRepository.update(tokenExist.id, { hash });
   }
 
   async refreshToken(oldToken: string) {
-    const existentToken = await this.tokenRepository.findOne({
+    const tokenExist = await this.tokenRepository.findOne({
       hash: oldToken,
     });
 
-    if (existentToken) {
-      const user = await this.userService.findOne(existentToken.user.email);
-
-      return await this.authService.login(user.id, user.email);
+    if (!tokenExist) {
+      return { error: 'Este token não existe para ser atualizado!' };
     }
 
-    return new HttpException(
-      { errorMessage: 'Token Inválido' },
-      HttpStatus.UNAUTHORIZED,
-    );
-  }
+    const { email, password } = tokenExist.user;
 
-  async findAll() {
-    return await this.tokenRepository.find();
+    return await this.authService.login({ email, password });
   }
 }
