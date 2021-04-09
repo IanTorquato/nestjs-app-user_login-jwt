@@ -1,28 +1,25 @@
-interface UserDataCreate {
-  name: string;
-  email: string;
-  password: string;
+import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
+
+import { User } from '../user.entity';
+
+class CreateUserDto extends PartialType(
+  PickType(User, ['name', 'email', 'password'] as const),
+) {
+  // Empty
 }
 
-interface UserCreateSuccessful {
-  id: number;
-  name: string;
-  email: string;
-  created_at: Date;
+class FindUserDto extends PartialType(OmitType(User, ['password'] as const)) {
+  // Empty
 }
 
-interface UserDataLogin {
-  email: string;
-  password: string;
+class LoginUserDto extends PartialType(
+  PickType(User, ['email', 'password'] as const),
+) {
+  // Empty
 }
 
-interface UserLoginSuccessful {
+class LoginResponse {
   access_token: string;
 }
 
-export {
-  UserDataCreate,
-  UserCreateSuccessful,
-  UserDataLogin,
-  UserLoginSuccessful,
-};
+export { CreateUserDto, FindUserDto, LoginUserDto, LoginResponse };

@@ -4,8 +4,9 @@ import * as bcrypt from 'bcrypt';
 
 import { UserService } from 'src/modules/user/user.service';
 import { TokenService } from 'src/modules/token/token.service';
-import { UserDataLogin, UserLoginSuccessful } from '../user/dto/user.dto';
+import { LoginResponse, LoginUserDto } from '../user/dto/user.dto';
 import { ResponseError } from 'src/globalDto/error.dto';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +21,8 @@ export class AuthService {
   async login({
     email,
     password,
-  }: UserDataLogin): Promise<UserLoginSuccessful | ResponseError> {
-    const user = await this.userService.findOne(email);
+  }: LoginUserDto): Promise<LoginResponse | ResponseError> {
+    const user = (await this.userService.findOne(email)) as User;
 
     if (!user) {
       return { error: 'Usuário não encontrado, verifique o e-mail.' };

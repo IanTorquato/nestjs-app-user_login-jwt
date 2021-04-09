@@ -3,7 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { ResponseError } from 'src/globalDto/error.dto';
-import { UserCreateSuccessful, UserDataCreate } from './dto/user.dto';
+import { CreateUserDto, FindUserDto } from './dto/user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -15,9 +15,7 @@ export class UserService {
     // Empty
   }
 
-  async create(
-    data: UserDataCreate,
-  ): Promise<UserCreateSuccessful | ResponseError> {
+  async create(data: CreateUserDto): Promise<FindUserDto | ResponseError> {
     const { name, email, password } = data;
 
     const userExist = await this.userRepository.findOne({ email });
@@ -46,7 +44,7 @@ export class UserService {
       });
   }
 
-  async findAll(): Promise<any> {
+  async findAll(): Promise<FindUserDto[]> {
     const users = await this.userRepository.find({
       select: ['id', 'name', 'email', 'created_at'],
     });
@@ -54,11 +52,13 @@ export class UserService {
     return users;
   }
 
-  async findOne(email: string): Promise<User | undefined> {
-    const userExist = await this.userRepository.findOne({ email });
+  async findOne(email: string): Promise<FindUserDto | ResponseError> {
+    const userExist = await this.userRepository.findOne(email, {
+      select: ['id', 'name', 'email', 'created_at'],
+    });
 
     if (!userExist) {
-      return undefined;
+      return { error: 'nenhum usuário encontrado!' };
     }
 
     return userExist;
