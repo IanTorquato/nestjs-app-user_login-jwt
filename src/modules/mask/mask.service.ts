@@ -20,7 +20,7 @@ export class MaskService {
     mask.color = data.color;
     mask.cost = data.cost;
     mask.size = data.size;
-    // mask.user = data.userId;
+    mask.user = data.userId;
 
     return await this.maskRepository
       .save(mask)
@@ -32,16 +32,7 @@ export class MaskService {
   }
 
   async findAll(): Promise<any> {
-    // const masks = await this.maskRepository
-    //   .createQueryBuilder('mask')
-    //   .leftJoinAndSelect('mask.user', 'user')
-    //   .getMany();
-
-    const masks = this.maskRepository.find({
-      relations: ['user'],
-      select: ['color', 'user'],
-    });
-
-    return masks;
+    // return await this.maskRepository.find({ relations: ['user'] });
+    return await this.maskRepository.find();
   }
 }
