@@ -3,11 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ExtractJwt } from 'passport-jwt';
 
-interface UserPayload {
-  id: number;
-  iat: number;
-  exp: number;
-}
+import { TokenJwtDecode } from './dto/auth.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: UserPayload) {
+  validate(payload: TokenJwtDecode) {
     return { userId: payload.id };
   }
 }
