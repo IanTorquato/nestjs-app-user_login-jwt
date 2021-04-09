@@ -11,5 +11,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true
-  }
+  },
+  "exclude": [
+    ".vscode",
+    "dist",
+    "node_modules"
+  ]
 }
