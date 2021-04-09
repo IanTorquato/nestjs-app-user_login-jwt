@@ -16,7 +16,7 @@ export class Mask {
   @Column({ nullable: false })
   color: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'money' })
   cost: number;
 
   @Column({ nullable: false })
@@ -27,7 +27,7 @@ export class Mask {
     onUpdate: 'CASCADE',
     nullable: false,
   })
-  user: [name: string];
+  user: User;
 
   @CreateDateColumn({ nullable: false })
   created_at: Date;

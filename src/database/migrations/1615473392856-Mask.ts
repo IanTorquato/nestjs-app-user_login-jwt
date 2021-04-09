@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class Mask1615473392856 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -41,9 +46,26 @@ export class Mask1615473392856 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'mask',
+      new TableForeignKey({
+        columnNames: ['userId'],
+        referencedTableName: 'user',
+        referencedColumnNames: ['user_id'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    const table = await queryRunner.getTable('mask');
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('userId') !== -1,
+    );
+
+    await queryRunner.dropForeignKey('mask', foreignKey);
     await queryRunner.dropTable('mask');
   }
 }
