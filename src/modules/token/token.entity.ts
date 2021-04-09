@@ -21,6 +21,7 @@ export class Token {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     nullable: false,
+    eager: true,
   })
   @JoinColumn({ referencedColumnName: 'id' })
   user: User;
