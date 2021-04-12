@@ -1,13 +1,24 @@
 version: '3.4'
 
 services:
-  your-service-name:
-    container_name: your-container-name
+  your-service-name-db:
+    container_name: your-container-name-db
     image: postgres:13-alpine
     volumes:
       - ./.vscode/postgres-data/:/var/lib/postgresql/data
     environment: 
-      POSTGRES_PASSWORD: "your-postgres-password"
-      POSTGRES_DB: "your-database-name"
+      POSTGRES_PASSWORD: "your-db-password"
+      POSTGRES_DB: "your-db-name"
     ports: 
       - "5432:5432"
+      
+  pgadmin:
+        container_name: your-container-name-pgadmin
+        image: dpage/pgadmin4
+        environment:
+          PGADMIN_DEFAULT_EMAIL: "your-email-access"
+          PGADMIN_DEFAULT_PASSWORD: "your-password-access"
+        ports:
+          - "3210:80"
+        depends_on:
+          - your-service-name-db
