@@ -20,7 +20,7 @@ export class MaskController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(): Promise<any> {
+  async findAll(): Promise<Mask[] | ResponseError> {
     return this.maskService.findAll();
   }
 }

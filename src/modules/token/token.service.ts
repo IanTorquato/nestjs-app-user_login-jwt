@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 
@@ -17,7 +17,13 @@ export class TokenService {
   }
 
   async save(hash: string, userId: number) {
-    return await this.tokenRepository.insert({ hash, user: { id: userId } });
+    return await this.tokenRepository
+      .insert({ hash, user: { id: userId } })
+      .catch((err) => {
+        console.error('Falha ao salvar o Token!');
+
+        Logger.error(err);
+      });
   }
 
   async refreshToken(oldToken: string): Promise<LoginResponse | ResponseError> {
