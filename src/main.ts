@@ -5,14 +5,14 @@ import { config } from 'dotenv';
 config();
 
 import { AppModule } from './app.module';
-import { InternalServerException } from './globalExceptions/exceptionsRemaining.filter';
-import { NotFoundException } from './globalExceptions/notFoundException.filter';
+import { RemainingExceptionFilter } from './globalExceptionFilters/remaining.exception';
+import { NotFoundExceptionFilter } from './globalExceptionFilters/notFound.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new InternalServerException());
-  app.useGlobalFilters(new NotFoundException());
+  app.useGlobalFilters(new RemainingExceptionFilter());
+  app.useGlobalFilters(new NotFoundExceptionFilter());
 
   await app.listen(3333, () => console.log('Server running on post 3333'));
 }

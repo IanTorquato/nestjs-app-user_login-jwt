@@ -37,10 +37,7 @@ export class MaskService {
     const masks = await this.maskRepository.find();
 
     if (!masks[0]) {
-      throw new EntityNotFoundError(
-        'Mask',
-        'modules/mask/mask.service.ts/findAll',
-      );
+      throw new EntityNotFoundError('Mask', 'Nenhuma máscara cadastrada.');
     }
 
     return masks;

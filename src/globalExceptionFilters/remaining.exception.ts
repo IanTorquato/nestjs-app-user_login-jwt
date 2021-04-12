@@ -8,22 +8,22 @@ import {
 import { Response, Request } from 'express';
 
 @Catch()
-class InternalServerException implements ExceptionFilter {
+class RemainingExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.status || HttpStatus.INTERNAL_SERVER_ERROR;
 
-    Logger.error(exception.message);
+    Logger.error(exception);
 
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: 'Falha no servidor, contatar responsável.',
+      message: exception.message,
     });
   }
 }
 
-export { InternalServerException };
+export { RemainingExceptionFilter };
