@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -44,29 +44,35 @@ export class UserService {
       });
   }
 
-  async findAll(): Promise<FindUserDto[] | ResponseError> {
+  async findAll(): Promise<FindUserDto[]> {
     const users = await this.userRepository.find({
       select: ['id', 'name', 'email', 'created_at'],
     });
 
     if (!users[0]) {
-      return { error: 'Nenhum usuário encontrado!' };
+      throw new EntityNotFoundError(
+        'User',
+        'modules/user/user.service.ts/findAll',
+      );
     }
 
     return users;
   }
 
-  async findOne(email: string): Promise<FindUserDto | ResponseError> {
-    const userExist = await this.userRepository.findOne({
+  async findOne(email: string): Promise<FindUserDto> {
+    const user = await this.userRepository.findOne({
       where: { email },
       select: ['id', 'name', 'email', 'created_at'],
     });
 
-    if (!userExist) {
-      return { error: 'Nenhum usuário encontrado!' };
+    if (!user) {
+      throw new EntityNotFoundError(
+        'User',
+        'modules/user/user.service.ts/findOne',
+      );
     }
 
-    return userExist;
+    return user;
   }
 
   async findOneLogin(email: string): Promise<User> {

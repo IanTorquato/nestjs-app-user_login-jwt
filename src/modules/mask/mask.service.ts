@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 
 import { ResponseError } from 'src/globalDto/error.dto';
 import { CreateMaskDto } from './dto/mask.dto';
@@ -32,12 +32,15 @@ export class MaskService {
       });
   }
 
-  async findAll(): Promise<Mask[] | ResponseError> {
+  async findAll(): Promise<Mask[]> {
     // return await this.maskRepository.find({ relations: ['user'] });
     const masks = await this.maskRepository.find();
 
     if (!masks[0]) {
-      return { error: 'Nenhuma máscara cadastrada!' };
+      throw new EntityNotFoundError(
+        'Mask',
+        'modules/mask/mask.service.ts/findAll',
+      );
     }
 
     return masks;
