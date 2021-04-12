@@ -68,4 +68,8 @@ export class UserService {
 
     return userExist;
   }
+
+  async findOneLogin(email: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { email } });
+  }
 }

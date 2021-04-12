@@ -6,7 +6,6 @@ import { UserService } from 'src/modules/user/user.service';
 import { TokenService } from 'src/modules/token/token.service';
 import { LoginResponse, LoginUserDto } from '../user/dto/user.dto';
 import { ResponseError } from 'src/globalDto/error.dto';
-import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +21,7 @@ export class AuthService {
     email,
     password,
   }: LoginUserDto): Promise<LoginResponse | ResponseError> {
-    const user = (await this.userService.findOne(email)) as User;
+    const user = await this.userService.findOneLogin(email);
 
     if (!user) {
       return { error: 'Usuário não encontrado, verifique o e-mail.' };
