@@ -1,10 +1,11 @@
-import { User } from 'src/modules/user/user.entity';
+import { PartialType, PickType } from '@nestjs/mapped-types';
 
-interface MaskDataCreate {
-  color: string;
-  cost: number;
-  size: string;
-  userId: User;
+import { Mask } from '../mask.entity';
+
+class CreateMaskDto extends PartialType(
+  PickType(Mask, ['color', 'cost', 'size', 'user'] as const),
+) {
+  // Empty
 }
 
-export { MaskDataCreate };
+export { CreateMaskDto };
