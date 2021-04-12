@@ -1,5 +1,5 @@
 import { EntityNotFoundError, Repository } from 'typeorm';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { ResponseError } from 'src/globalDto/error.dto';
@@ -21,7 +21,7 @@ export class UserService {
     const userExist = await this.userRepository.findOne({ email });
 
     if (userExist) {
-      return { error: 'Este e-mail já está sendo usado!' };
+      throw new ConflictException('Este e-mail já está sendo usado!');
     }
 
     const passwordEncrypted = await bcrypt.hash(password, 8);
