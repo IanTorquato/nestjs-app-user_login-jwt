@@ -44,21 +44,26 @@ export class UserService {
       });
   }
 
-  async findAll(): Promise<FindUserDto[]> {
+  async findAll(): Promise<FindUserDto[] | ResponseError> {
     const users = await this.userRepository.find({
       select: ['id', 'name', 'email', 'created_at'],
     });
+
+    if (!users[0]) {
+      return { error: 'Nenhum usuário encontrado!' };
+    }
 
     return users;
   }
 
   async findOne(email: string): Promise<FindUserDto | ResponseError> {
-    const userExist = await this.userRepository.findOne(email, {
+    const userExist = await this.userRepository.findOne({
+      where: { email },
       select: ['id', 'name', 'email', 'created_at'],
     });
 
     if (!userExist) {
-      return { error: 'nenhum usuário encontrado!' };
+      return { error: 'Nenhum usuário encontrado!' };
     }
 
     return userExist;

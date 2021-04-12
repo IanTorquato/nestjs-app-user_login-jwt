@@ -45,7 +45,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Request() request: any): Promise<FindUserDto[]> {
+  async findAll(
+    @Request() request: any,
+  ): Promise<FindUserDto[] | ResponseError> {
     Logger.verbose(request.user, 'User Controller -> findAll', false);
 
     return this.userService.findAll();
