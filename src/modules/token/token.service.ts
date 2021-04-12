@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 
+import { ResponseError } from 'src/globalDto/error.dto';
+import { LoginResponse } from '../user/dto/user.dto';
 import { Token } from './token.entity';
 
 @Injectable()
@@ -18,7 +20,7 @@ export class TokenService {
     return await this.tokenRepository.insert({ hash, user: { id: userId } });
   }
 
-  async refreshToken(oldToken: string) {
+  async refreshToken(oldToken: string): Promise<LoginResponse | ResponseError> {
     const tokenExist = await this.tokenRepository.findOne({
       hash: oldToken,
     });
